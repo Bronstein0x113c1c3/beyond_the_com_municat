@@ -1,0 +1,28 @@
+syntax = "proto3";
+option go_package = "/tracking_protoc";
+message StopRequest{
+    string id = 1;
+}
+message IncomingRequest{
+    string ip = 1;
+    int32 port = 2;
+}
+
+message SelfNotify{
+    repeated IncomingRequest receipent_list = 1;
+}
+message OtherNotify{
+    string id = 1;
+}
+
+message Notify{
+    oneof request{
+        SelfNotify self = 1;
+        OtherNotify other = 2;
+    }
+    bool status = 3;
+}
+service Tracking {
+    rpc Add(IncomingRequest) returns (stream Notify);
+    rpc Out(StopRequest) returns (Notify); 
+}
