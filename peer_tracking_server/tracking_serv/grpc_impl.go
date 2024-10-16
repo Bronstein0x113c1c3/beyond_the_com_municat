@@ -1,6 +1,7 @@
 package trackingserv
 
 import (
+	"log"
 	"tracking_server/tracking_protoc"
 	"tracking_server/typing"
 )
@@ -26,12 +27,15 @@ func (t *TrackerServer) Add(r *tracking_protoc.IncomingRequest, s tracking_proto
 	}
 	go func() {
 		<-s.Context().Done()
-
+		log.Printf("context called for %v \n", ID)
 		new_chan.Cancel()
 	}()
 
 	for_each := func(s tracking_protoc.Tracking_AddServer) foreach {
 		return func(value interface{}, err error, closed bool) bool {
+			if closed {
+				return false
+			}
 			n := value.(*typing.Notification)
 			m := &tracking_protoc.Notify{
 				Status: n.Status,

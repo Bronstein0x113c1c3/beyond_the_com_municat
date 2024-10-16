@@ -46,6 +46,10 @@ func (t *TrackerServer) Close() error {
 	t.Tracker.Close(err)
 	return err
 }
+func (t *TrackerServer) Clear() {
+	close(t.limiter)
+	t.receipent_list.Clear()
+}
 func (t *TrackerServer) Check() bool {
 	return len(t.limiter) > t.max_user
 }
